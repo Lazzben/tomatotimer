@@ -1,6 +1,9 @@
-import React from 'react'
+import React from 'react';
 import { Button, Input } from 'antd';
-import axios from '../config/axios'
+import axios from 'src/config/axios';
+import { Link } from 'react-router-dom';
+
+import './signup.scss'
 
 interface IStateISomeComponentState {
   account: string,
@@ -50,7 +53,8 @@ export default class Signup extends React.Component<{}, IStateISomeComponentStat
   public render(){
     const {account, password, password_conformation} = this.state
     return(
-      <div>
+      <div className="signup" id="signup">
+        <h1>小黄闹钟注册</h1>
         <Input 
           placeholder="输入用户名"
           value={account}
@@ -66,7 +70,8 @@ export default class Signup extends React.Component<{}, IStateISomeComponentStat
           value={password_conformation}
           onChange={this.onChangePasswordConformation}
         />
-        <Button type="primary" onClick={this.submit}>注册</Button>
+        <Button type="primary" onClick={this.submit} block={true}>注册</Button>
+        <p>如果已有账号，请 <Link to="/login">登录</Link></p>
       </div>
     )
   }

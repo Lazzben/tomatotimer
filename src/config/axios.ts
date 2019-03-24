@@ -1,4 +1,5 @@
 import axios from 'axios';
+import history from './history'
 
 const appID = "am7UHycTV275XiSCxc82RMcB"
 const appSecret = "n8bqtjgE3B8BzoMYTyTQHDrb"
@@ -18,10 +19,10 @@ instance.interceptors.request.use((config) => {
         config.headers['Authorization'] = `Bearer ${xToken}`
     }
     return config;
-}, (error) => {
-    console.error(error)
-    return Promise.reject(error);
-});
+  }, (error) => {
+      console.error(error)
+      return Promise.reject(error);
+  });
 
 // Add a response interceptor
 instance.interceptors.response.use((response) => {
@@ -31,8 +32,12 @@ instance.interceptors.response.use((response) => {
     }
     return response;
 }, (error) => {
+    if(error.response.status === 401){
+      history.push('/login')
+    }
     // Do something with response error
     return Promise.reject(error);
 });
+
 
 export default instance

@@ -1,0 +1,40 @@
+#todoitem {
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid #ddd;
+  padding: 8px 0 8px 8px ;
+  &:hover {
+    background: #f9f9f9;
+  }
+  &.editing {
+    background: #fff3d2;
+  }
+  &:first-child {
+    border-top: 1px solid #ddd;
+  }
+  &.completed {
+    text-decoration: line-through;
+    color: #a9a9a9;
+  }
+  >.editing,
+  >.text {
+    padding: 0 8px;
+    flex: 1;
+  }
+  >.editing {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    >input {
+      padding: 0;
+      border: 0;
+      outline: none;
+      background: transparent;
+    }
+    >.option>.anticon{
+      margin-left: 4px;
+      color: #a9a9a9;
+      cursor: pointer;
+    }
+  }
+}
