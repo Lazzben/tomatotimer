@@ -2,29 +2,14 @@ import React from 'react'
 import Todoinput from './todoinput'
 import Todoitem from './todoitem'
 import axios from 'src/config/axios'
+import { connect } from 'react-redux'
+import { initTodos } from 'src/redux/reducers/action'
 
 import './todo.scss'
 
-interface ItodosState {
-  todos: any[];
-}
-
-export default class Todos extends React.Component<any, ItodosState> {
+class Todos extends React.Component<any> {
   constructor(props: any){
     super(props)
-    this.state = {
-      todos: []
-    }
-  }
-
-  public addTodo = async (params: any) => {
-    const {todos} = this.state
-    try{
-      const response = await axios.post('todos', params)
-      this.setState({todos: [response.data.resource,...todos]})
-    }catch(e){
-      throw new Error(e)
-    }
   }
 
   public componentDidMount(){
@@ -37,43 +22,23 @@ export default class Todos extends React.Component<any, ItodosState> {
       const todos =  response.data.resources.map( (t: any) => {
         return Object.assign({}, t, {editing: false})
       })
-      this.setState({todos})
+      this.props.initTodos(todos)
     }catch(e){
       throw new Error(e)
     }
   }
 
   public updateTodo = async (id: number, params: any) => {
-    const {todos} = this.state
     try{
       const response = await axios.put(`todos/${id}`, params)
-      const newtodos = todos.map(todo => {
-        if(todo.id === id){
-          return response.data.resource
-        }else{
-          return todo
-        }
-      })
-      this.setState({todos: newtodos})
+      this.props.updateTodo(response.data.resource)
     }catch(e){
       throw new Error(e)
     }
   }
 
-  public turnToEdit = (id: number) => {
-    const {todos} = this.state
-    const newtodos = todos.map(t => {
-      if(t.id === id){
-        return Object.assign({}, t, {editing: true})
-      }else{
-        return Object.assign({}, t , {editing: false})
-      }
-    })
-    this.setState({todos: newtodos})
-  }
-
   public get unDeletedTodos(){
-    return this.state.todos.filter((t:any) => !t.deleted)
+    return this.props.todos.filter((t:any) => !t.deleted)
   }
 
   public get unCompletedTodos(){
@@ -81,22 +46,22 @@ export default class Todos extends React.Component<any, ItodosState> {
   }
 
   public get completedTodos(){
-    return this.state.todos.filter((t:any) => t.completed)
+    return this.props.todos.filter((t:any) => t.completed)
   }
 
   public render(){
     return(
       <div className='todos' id='todos'>
-        <Todoinput addTodo={(params) => this.addTodo(params)}/>
+        <Todoinput/>
         <div className="todolist">
           {
             this.unCompletedTodos.map( (todo:any) => {
-              return <Todoitem key={todo.id} {...todo} updateTodo={this.updateTodo} turnToEdit={this.turnToEdit}/>
+              return <Todoitem key={todo.id} {...todo}/>
             })
           }
           {
             this.completedTodos.map( (todo:any) => {
-              return <Todoitem key={todo.id} {...todo} updateTodo={this.updateTodo} turnToEdit={this.turnToEdit}/>
+              return <Todoitem key={todo.id} {...todo}/>
             })
           }
         </div>
@@ -104,3 +69,17 @@ export default class Todos extends React.Component<any, ItodosState> {
     )
   }
 }
+
+const mapStateToProps = (state: any, ownProps: any) => ({
+  todos: state.todos,
+  ...ownProps
+})
+
+const mapDispatchToProps = {
+  initTodos
+}
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Todos)

@@ -1,6 +1,9 @@
 import React from 'react'
 import {Checkbox, Icon} from 'antd'
 import classNames from 'classnames'
+import { connect } from 'react-redux'
+import { editTodo, updateTodo } from 'src/redux/reducers/action'
+import axios from 'src/config/axios'
 
 import './todoitems.scss'
 
@@ -9,15 +12,15 @@ interface ITodoitemProps {
   description: string,
   completed: boolean,
   editing: boolean,
-  updateTodo: (id: number, params: any) => void,
-  turnToEdit: (id: number) => void  
+  updateTodo: (params: any) => any,
+  editTodo: (id: number) => any  
 }
 
 interface ITodoitemState {
   eidttext: string
 }
 
-export default class Todoitem extends React.Component<ITodoitemProps, ITodoitemState> {
+class Todoitem extends React.Component<ITodoitemProps, ITodoitemState> {
   constructor(props: any){
     super(props)
     this.state = {
@@ -25,12 +28,18 @@ export default class Todoitem extends React.Component<ITodoitemProps, ITodoitemS
     }
   }
   
-  public updateTodo = (params: any) => {
-    this.props.updateTodo(this.props.id, params)
-  } 
 
-  public turnToEdit = () => {
-    this.props.turnToEdit(this.props.id)
+  public updateTodo = async (params: any) => {
+    try{
+      const response = await axios.put(`todos/${this.props.id}`, params)
+      this.props.updateTodo(response.data.resource)
+    }catch(e){
+      throw new Error(e)
+    }
+  }
+
+  public editTodo = () => {
+    this.props.editTodo(this.props.id)
   }
 
   public onKeyUp = (e:any) => {
@@ -39,10 +48,12 @@ export default class Todoitem extends React.Component<ITodoitemProps, ITodoitemS
     }
   }
 
+
   public render(){
     const editing = (
       <div className="editing">
-        <input type="text" 
+        <input
+          type="text"
           value={this.state.eidttext} 
           onChange={e => this.setState({eidttext: e.target.value})}
           onKeyUp={this.onKeyUp}
@@ -59,7 +70,7 @@ export default class Todoitem extends React.Component<ITodoitemProps, ITodoitemS
     )
 
     const text = (
-      <span onDoubleClick={this.turnToEdit}>{this.props.description}</span>
+      <span onDoubleClick={this.editTodo}>{this.props.description}</span>
     )
 
     const todoitemclass = classNames({
@@ -78,3 +89,17 @@ export default class Todoitem extends React.Component<ITodoitemProps, ITodoitemS
     )
   }
 }
+
+const mapStateToProps = (state: any, ownProps: any) => ({
+  ...ownProps
+})
+
+const mapDispatchToProps = {
+  editTodo,
+  updateTodo
+}
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Todoitem)

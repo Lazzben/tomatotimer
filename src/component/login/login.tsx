@@ -42,7 +42,7 @@ export default class Login extends React.Component<IRouter, IStateISomeComponent
         account, 
         password, 
       })
-      this.props.history.push('/index')
+      this.props.history.push('/home')
     }catch(e){
       throw new Error(e)
     }

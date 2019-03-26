@@ -1,6 +1,6 @@
 import * as React from 'react'
 import {Router, Route } from "react-router-dom";
-import Index from './component/index/index'
+import Home from './component/home/home'
 import Signup from './component/signup/signup'
 import Login from './component/login/login'
 import history from './config/history'
@@ -13,7 +13,7 @@ class App extends React.Component {
         <div>
           <Route path="/" exact={true} component={Login} />
           <Route path="/login" component={Login}/>
-          <Route path="/index" component={Index}/>
+          <Route path="/home" component={Home}/>
           <Route path="/signUp" component={Signup}/>
         </div>
       </Router>

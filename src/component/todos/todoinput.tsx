@@ -1,15 +1,18 @@
 import React from 'react'
-import { Input, Icon} from 'antd'
+import { Input, Icon } from 'antd'
+import { connect } from 'react-redux'
+import { addTodo } from 'src/redux/reducers/action'
+import axios from 'src/config/axios'
 
 interface ITodeInputState {
   description: string
 }
 
 interface ITodeInputProps {
-  addTodo: (params: any) => void
+  addTodo: (params: any) => {}
 }
 
-export default class TodoInput extends React.Component<ITodeInputProps, ITodeInputState> {
+class TodoInput extends React.Component<ITodeInputProps, ITodeInputState> {
   constructor(props: any){
     super(props)
     this.state = {
@@ -25,19 +28,23 @@ export default class TodoInput extends React.Component<ITodeInputProps, ITodeInp
 
   public onKeyUp = (e: any) => {
     if(e.keyCode === 13 && this.state.description !== ''){
-      this.addTodo()
-      console.log('enter')
+      this.postTodo()
     }
   }
 
-  public addTodo = () => {
-    this.props.addTodo({description: this.state.description})
-    this.setState({description: ''})
+  public postTodo = async () => {
+    try{
+      const response = await axios.post('/todos', {description: this.state.description})
+      this.props.addTodo(response.data.resource)
+      this.setState({description: ''})
+    }catch(e){
+      throw new Error(e)
+    }
   }
 
   public render(){
     const { description } = this.state;
-    const suffix = description ? <Icon type="enter" onClick={this.addTodo}/> : <span />;
+    const suffix = description ? <Icon type="enter" onClick={this.postTodo}/> : <span />;
     return (
       <Input
         placeholder="开始一项新计划"
@@ -49,3 +56,16 @@ export default class TodoInput extends React.Component<ITodeInputProps, ITodeInp
     )
   }
 }
+
+const mapStateToProps = (state: any, ownProps: any) => ({
+  ...ownProps
+})
+
+const mapDispatchToProps = {
+  addTodo
+}
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(TodoInput)

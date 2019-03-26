@@ -4,7 +4,7 @@ import {Menu, Dropdown, Icon} from 'antd'
 import history from 'src/config/history'
 import Todos from '../todos/todos'
 
-import './index.scss'
+import './home.scss'
 
 interface IState {
   user: {
@@ -32,7 +32,7 @@ const menu = (
   </Menu>
 );
 
-export default class Index extends React.Component<IRouter, IState> {
+export default class Home extends React.Component<IRouter, IState> {
   constructor(props: any){
     super(props)
     this.state = {
@@ -54,8 +54,6 @@ export default class Index extends React.Component<IRouter, IState> {
           account: response.data.account
         }
       })
-      console.log(response)
-      console.log(response.status)
     }catch(e){
       // console.log(e.response)
       // console.error('获取用户失败')
@@ -68,9 +66,9 @@ export default class Index extends React.Component<IRouter, IState> {
 
   public render(){
     return(
-    <div className="index" id="index">
+    <div className="home" id="home">
       <header>
-        <span className="logo">小黄闹钟</span>
+        <span className="logo">小黄的番茄时钟</span>
         <Dropdown overlay={menu}>
           <a className="ant-dropdown-link" href="#">
             {this.state.user.account} <Icon type="down" />
@@ -81,7 +79,7 @@ export default class Index extends React.Component<IRouter, IState> {
         <Todos/>
       </main>
     </div>
-  )
+    )
   }
   
 } 
