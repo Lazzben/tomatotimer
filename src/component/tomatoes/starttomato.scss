@@ -1,0 +1,13 @@
+#starttomato {
+  >.inputwrapper,
+  >.countdownwrapper {
+    position: relative
+
+  }
+  .cancle {
+    position: absolute;
+    right: -5px;
+    top: -5px;
+    background: #fff;
+  }
+}

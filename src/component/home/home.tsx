@@ -5,6 +5,7 @@ import history from 'src/config/history'
 import Todos from '../todos/todos'
 
 import './home.scss'
+import Tomatoes from '../tomatoes/tomatoes';
 
 interface IState {
   user: {
@@ -76,6 +77,7 @@ export default class Home extends React.Component<IRouter, IState> {
         </Dropdown>
       </header>
       <main>
+        <Tomatoes/>
         <Todos/>
       </main>
     </div>
