@@ -34,8 +34,8 @@ class Countdown extends React.Component<ICountdownProps,ICountdownState> {
 
   public componentDidMount(){
     timeID = setInterval(() => {
-      document.title = `${this.countDown} —小黄番茄时钟`
       this.setState({timer: this.state.timer - 1000})
+      document.title = `${this.countDown} —小黄番茄时钟`
       if(this.state.timer <= 0){
         clearInterval(timeID)
         this.props.finished()

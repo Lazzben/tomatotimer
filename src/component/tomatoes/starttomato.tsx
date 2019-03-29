@@ -67,7 +67,7 @@ class Starttomato extends React.Component<ITomatoesActionProps,ITomatoesState> {
   public render(){
     let html = <div/>
     if(this.props.unfinishedTomatoes === undefined){
-      html = <Button onClick={this.props.startTomato}>开始番茄</Button>
+      html = <Button className="starttomatobtn" onClick={this.props.startTomato}>开始番茄</Button>
     }else{
       const createdAt = Date.parse(this.props.unfinishedTomatoes.created_at)
       const duration = this.props.unfinishedTomatoes.duration
