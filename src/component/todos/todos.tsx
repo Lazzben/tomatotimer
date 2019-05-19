@@ -3,29 +3,13 @@ import Todoinput from './todoinput'
 import Todoitem from './todoitem'
 import axios from 'src/config/axios'
 import { connect } from 'react-redux'
-import { initTodos } from 'src/redux/reducers/action'
+import { updateTodo } from 'src/redux/reducers/action'
 
 import './todo.scss'
 
 class Todos extends React.Component<any> {
   constructor(props: any){
     super(props)
-  }
-
-  public componentDidMount(){
-    this.getTodo()
-  }
-
-  public getTodo = async () => {
-    try{
-      const response = await axios.get('todos')
-      const todos =  response.data.resources.map( (t: any) => {
-        return Object.assign({}, t, {editing: false})
-      })
-      this.props.initTodos(todos)
-    }catch(e){
-      throw new Error(e)
-    }
   }
 
   public updateTodo = async (id: number, params: any) => {
@@ -76,7 +60,7 @@ const mapStateToProps = (state: any, ownProps: any) => ({
 })
 
 const mapDispatchToProps = {
-  initTodos
+  updateTodo
 }
 
 export default connect(

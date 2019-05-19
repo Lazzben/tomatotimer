@@ -2,7 +2,7 @@ import React from 'react'
 import Starttomato from './starttomato'
 import Tomatolist from './tomatolist'
 import { connect } from 'react-redux'
-import { addTomato, initTomato, updatetomato} from 'src/redux/reducers/action'
+import { addTomato, updatetomato} from 'src/redux/reducers/action'
 import axios from 'src/config/axios'
 import _ from 'lodash'
 import {format} from 'date-fns'
@@ -14,24 +14,10 @@ class Tomatoes extends React.Component<any> {
     super(props)
   }
 
-  public componentDidMount(){
-    this.getTomatoes()
-  }
-
   public startTomato = async () => {
     try{
       const response = await axios.post('tomatoes', {duration: 600000})
       this.props.addTomato(response.data.resource)
-    }catch(e){
-      throw new Error(e)
-    }
-  }
-
-  public getTomatoes = async () => {
-    try{
-      const response = await axios.get('tomatoes')
-      this.props.initTomato(response.data.resources)
-      console.log(response.data.resources)
     }catch(e){
       throw new Error(e)
     }
@@ -47,11 +33,9 @@ class Tomatoes extends React.Component<any> {
 
   public get finishedTomatoes (){
     const finishedtomatos =  this.props.tomatoes.filter( (t:any) => t.description && t.ended_at && !t.aborted)
-    console.log(finishedtomatos)
     const obj = _.groupBy(finishedtomatos, (tomato)=>{
       return format(tomato.started_at, 'YYYY-MM-D')
     })
-    console.log(obj)
     return obj
   }
 
@@ -72,7 +56,6 @@ const mapStateToProps = (state:any, ownProps: any) => ({
 
 const mapDispatchToProps = {
   addTomato,
-  initTomato,
   updatetomato
 }
 

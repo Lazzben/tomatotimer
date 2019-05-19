@@ -3,9 +3,14 @@ import axios from 'src/config/axios'
 import {Menu, Dropdown, Icon} from 'antd'
 import history from 'src/config/history'
 import Todos from '../todos/todos'
+import { initTodos, initTomato } from 'src/redux/reducers/action' 
+import { connect } from 'react-redux'
 
 import './home.scss'
-import Tomatoes from '../tomatoes/tomatoes';
+import Tomatoes from '../tomatoes/tomatoes'
+import Statistics from '../statistics/statistics'
+
+
 
 interface IState {
   user: {
@@ -13,9 +18,6 @@ interface IState {
   }
 }
 
-interface IRouter {
-  history: any
-}
 
 const handleCancel = () => {
   localStorage.setItem('x-token', '')
@@ -33,7 +35,7 @@ const menu = (
   </Menu>
 );
 
-export default class Home extends React.Component<IRouter, IState> {
+class Home extends React.Component<any, IState> {
   constructor(props: any){
     super(props)
     this.state = {
@@ -45,6 +47,8 @@ export default class Home extends React.Component<IRouter, IState> {
   
   public async componentWillMount(){
     await this.getme()
+    await this.getTodo()
+    await this.getTomatoes()
   }
 
   public getme = async() => {
@@ -65,6 +69,28 @@ export default class Home extends React.Component<IRouter, IState> {
     }
   }
 
+
+  public getTodo = async () => {
+    try{
+      const response = await axios.get('todos')
+      const todos =  response.data.resources.map( (t: any) => {
+        return Object.assign({}, t, {editing: false})
+      })
+      this.props.initTodos(todos)
+    }catch(e){
+      throw new Error(e)
+    }
+  }
+
+  public getTomatoes = async () => {
+    try{
+      const response = await axios.get('tomatoes')
+      this.props.initTomato(response.data.resources)
+    }catch(e){
+      throw new Error(e)
+    }
+  }
+
   public render(){
     return(
     <div className="home" id="home">
@@ -76,12 +102,24 @@ export default class Home extends React.Component<IRouter, IState> {
           </a>
         </Dropdown>
       </header>
-      <main>
+      <main> 
         <Tomatoes/>
         <Todos/>
       </main>
+      <Statistics/>
     </div>
     )
   }
   
 } 
+
+const mapDispatchToProps = {
+  initTodos,
+  initTomato
+}
+
+const mapStateToProps = (state:any, ownProps:any) => ({
+  ...ownProps
+})
+
+export default connect(mapStateToProps,mapDispatchToProps)(Home)
